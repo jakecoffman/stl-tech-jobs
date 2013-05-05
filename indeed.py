@@ -55,7 +55,7 @@ def index():
     return flask.render_template("index.html")
 
 
-@app.route("/charts/lang-by-date")
+@app.route("/charts/lang-by-date.html")
 def lang_by_date():
     data = {}
     for lang in langs:
@@ -76,7 +76,7 @@ def lang_by_date():
     return flask.render_template("job_lang_by_date.html", data=data)
 
 
-@app.route("/charts/top-employer")
+@app.route("/charts/top-employer.html")
 def top_employer():
     companies = {}
     for lang in langs:
@@ -91,6 +91,17 @@ def top_employer():
     data = sorted(companies.items(), key=itemgetter(1))
     print json.dumps(data[-10:])
     return flask.render_template("top_employer.html", data=data[-10:])
+
+
+@app.route("/charts/language-popularity.html")
+def lang_pop():
+    data = {}
+    for lang in langs:
+        results = get_results(lang)
+        data[lang] = len(results)
+
+    return flask.render_template("language_popularity.html", data=data.items())
+
 
 if __name__ == "__main__":
     app.run(debug=True)
