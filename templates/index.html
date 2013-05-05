@@ -1,57 +1,13 @@
 <html>
 <head>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
 </head>
 <body>
-<div id="container" style="width:100%; height:400px;"></div>
+    <h1>St Louis Technology Jobs</h1>
+    <p>Select your chart:</p>
+    <ul>
+        <li><a href="/charts/lang-by-date">Amount of job postings by date/language</a></li>
+        <li><a href="/charts/top-employer">Top job postings by employer</a></li>
+    </ul>
 </body>
-<script src="/static/highcharts.js"></script>
-<script type="text/javascript">
-    $(function () {
-        $('#container').highcharts({
-            chart: {
-                type: 'spline'
-            },
-            title: {
-                text: 'St. Louis Job Postings By Date'
-            },
-            subtitle: {
-                text: 'data from indeed.com'
-            },
-            xAxis: {
-                type: 'datetime',
-                dateTimeLabelFormats: { // don't display the dummy year
-                    month: '%e. %b',
-                    year: '%b'
-                }
-            },
-            yAxis: {
-                title: {
-                    text: 'Job Postings'
-                },
-                min: 0
-            },
-            tooltip: {
-                formatter: function() {
-                    return '<b>'+ this.series.name +'</b><br/>'+
-                            Highcharts.dateFormat('%e %b', this.x) +' -- '+ this.y +' jobs';
-                }
-            },
-
-            series: [
-                {% for k in data.keys() %}
-                {
-                name: '{{ k }}',
-                // Define the data points. All series have a dummy year
-                // of 1970/71 in order to be compared on the same x axis. Note
-                // that in JavaScript, months start at 0 for January, 1 for February etc.
-                data: [
-                    {% for date,amt in data[k] -%}
-                        [Date.UTC({{ date }}), {{ amt }}],
-                    {% endfor %}
-                ]
-            },{% endfor %}]
-        });
-    });
-</script>
 </html>

@@ -3,6 +3,7 @@ import requests
 import json
 from datetime import datetime
 import urllib
+from operator import itemgetter
 
 app = flask.Flask(__name__)
 db = {}
@@ -38,6 +39,11 @@ def get_results(lang):
 
 @app.route("/")
 def index():
+    return flask.render_template("index.html")
+
+
+@app.route("/charts/lang-by-date")
+def lang_by_date():
     data = {}
     for lang in langs:
         data[lang] = []
@@ -58,8 +64,27 @@ def index():
 
         data[lang] = inner.items()
         data[lang].sort()
-    print json.dumps(data, indent=4)
-    return flask.render_template("index.html", data=data)
+    return flask.render_template("job_lang_by_date.html", data=data)
+
+
+@app.route("/charts/top-employer")
+def top_employer():
+    companies = {}
+    for lang in langs:
+        try:
+            results = json.loads(open("data/" + lang + ".json").read())
+        except:
+            results = get_results(lang)
+
+        for result in results:
+            if result['company'] in companies:
+                companies[result['company']] += 1
+            else:
+                companies[result['company']] = 1
+
+    data = sorted(companies.items(), key=itemgetter(1))
+    print json.dumps(data[-10:])
+    return flask.render_template("top_employer.html", data=data[-10:])
 
 if __name__ == "__main__":
     app.run(debug=True)
