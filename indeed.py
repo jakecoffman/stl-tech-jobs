@@ -24,6 +24,15 @@ def query(lang, start=0):
     return r.json()
 
 
+# TODO: refresh data if some exist on disk
+def get_results(lang):
+    try:
+        results = json.loads(open("data/" + lang + ".json").read())
+    except:
+        results = get_results(lang)
+    return results
+
+
 def get_results(lang):
     d = query(lang, 0)
     total = d['totalResults']
@@ -51,11 +60,7 @@ def lang_by_date():
     data = {}
     for lang in langs:
         data[lang] = []
-        try:
-            results = json.loads(open("data/" + lang + ".json").read())
-        except:
-            results = get_results(lang)
-
+        results = get_results(lang)
         inner = {}
 
         for result in results:
@@ -75,10 +80,7 @@ def lang_by_date():
 def top_employer():
     companies = {}
     for lang in langs:
-        try:
-            results = json.loads(open("data/" + lang + ".json").read())
-        except:
-            results = get_results(lang)
+        results = get_results(lang)
 
         for result in results:
             if result['company'] in companies:
