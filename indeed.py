@@ -29,11 +29,11 @@ def get_results(lang):
     try:
         results = json.loads(open("data/" + lang + ".json").read())
     except:
-        results = get_results(lang)
+        results = fetch_results(lang)
     return results
 
 
-def get_results(lang):
+def fetch_results(lang):
     d = query(lang, 0)
     total = d['totalResults']
     results = d['results']
