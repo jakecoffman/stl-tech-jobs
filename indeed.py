@@ -4,6 +4,10 @@ import json
 from datetime import datetime
 import urllib
 from operator import itemgetter
+try:
+    import publisher
+except ImportError:
+    raise Exception("Apply for a publisher key on indeed.com and put it in publisher.py")
 
 app = flask.Flask(__name__)
 db = {}
@@ -16,7 +20,7 @@ def write(data, query):
 
 def query(lang, start=0):
     lang = urllib.quote(lang)
-    r = requests.get("http://api.indeed.com/ads/apisearch?publisher=635112550631030&q={0}&l=st%20louis%2C+mo&start={1}&limit=25&co=us&v=2&format=json".format(lang, start))
+    r = requests.get("http://api.indeed.com/ads/apisearch?publisher={0}&q={1}&l=st%20louis%2C+mo&start={2}&limit=25&co=us&v=2&format=json".format(publisher.key, lang, start))
     return r.json()
 
 
